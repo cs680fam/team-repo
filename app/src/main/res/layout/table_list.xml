@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EnterMeals"
+    android:orientation="horizontal"
+    android:weightSum="2">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Enter meal name"/>
+    <TextView
+        android:id="@+id/action_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Enter date"
+        android:gravity="center"
+        android:layout_weight="1"/>
+
+
+</LinearLayout>
