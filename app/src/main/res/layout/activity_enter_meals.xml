@@ -29,11 +29,5 @@
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         />
-
-    <Button
-        android:id="@+id/send"
-        android:text="@string/SEND"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>
 </ScrollView>
