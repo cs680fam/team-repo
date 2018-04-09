@@ -1,5 +1,6 @@
 package com.example.nicollettedessy.projectidea.data.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,5 +15,5 @@ public class SearchResponseList {
     public int total;
     public String group;
     public String sort;
-    public List<SearchResponseListItem> item;
+    public ArrayList<SearchResponseListItem> item;
 }

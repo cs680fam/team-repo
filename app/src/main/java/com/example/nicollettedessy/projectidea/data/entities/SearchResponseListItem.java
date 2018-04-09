@@ -9,4 +9,9 @@ public class SearchResponseListItem {
     public String name;
     public String ndbno;
     public String ds;
+
+    public String getText()
+    {
+        return name;
+    }
 }

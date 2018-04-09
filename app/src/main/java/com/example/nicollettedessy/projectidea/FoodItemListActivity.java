@@ -1,5 +1,6 @@
 package com.example.nicollettedessy.projectidea;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +16,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.example.nicollettedessy.projectidea.dummy.DummyContent;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.nicollettedessy.projectidea.data.entities.SearchResponse;
+import com.example.nicollettedessy.projectidea.data.entities.SearchResponseListItem;
+import com.example.nicollettedessy.projectidea.data.repositories.USDAFoodCompositionRepository;
+import com.example.nicollettedessy.projectidea.services.FoodItemCollectionProvider;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An activity representing a list of FoodItems. This activity
@@ -34,6 +43,11 @@ public class FoodItemListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private final USDAFoodCompositionRepository repository = new USDAFoodCompositionRepository();
+    private ArrayList<SearchResponseListItem> foodItems = null;
+    public static final Map<String, SearchResponseListItem> ITEM_MAP = new HashMap<String, SearchResponseListItem>();
+
+    private SimpleItemRecyclerViewAdapter simpleItemRecyclerViewAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,28 +75,78 @@ public class FoodItemListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
+        foodItems = FoodItemCollectionProvider.ITEMS;
+
+        handleIntent(getIntent());
+
         View recyclerView = findViewById(R.id.fooditem_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        simpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(this, foodItems, mTwoPane);
+
+        recyclerView.setAdapter(simpleItemRecyclerViewAdapter);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        String intentAction = intent.getAction();
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            //use the query to search your data somehow
+
+            searchBy(query);
+        }
+    }
+
+    private void searchBy(String query) {
+        repository.GetFoodsBy(query, getApplicationContext(), this.getListener(), this.getErrorListener());
+    }
+
+    private Response.Listener<SearchResponse> getListener() {
+        return new Response.Listener<SearchResponse>() {
+
+            @Override
+            public void onResponse(SearchResponse response) {
+                for (SearchResponseListItem item : response.list.item) {
+                    FoodItemCollectionProvider.addItem(item);
+                    simpleItemRecyclerViewAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+    private Response.ErrorListener getErrorListener() {
+        return new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        };
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final ItemListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final FoodItemListActivity mParentActivity;
+        private final List<SearchResponseListItem> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                SearchResponseListItem item = (SearchResponseListItem) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(FoodItemDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putString(FoodItemDetailFragment.ARG_ITEM_ID, item.ndbno);
                     FoodItemDetailFragment fragment = new FoodItemDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -91,7 +155,7 @@ public class FoodItemListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, FoodItemDetailActivity.class);
-                    intent.putExtra(FoodItemDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(FoodItemDetailFragment.ARG_ITEM_ID, item.ndbno);
 
                     context.startActivity(intent);
                 }
@@ -99,7 +163,7 @@ public class FoodItemListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(FoodItemListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<SearchResponseListItem> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -115,8 +179,8 @@ public class FoodItemListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(mValues.get(position).ndbno);
+            holder.mContentView.setText(mValues.get(position).name);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);

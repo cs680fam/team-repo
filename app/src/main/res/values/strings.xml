@@ -2,4 +2,7 @@
     <string name="app_name">ProjectIdea</string>
     <string name="title_activity_food_search">Food Search</string>
     <string name="search">Search</string>
+    <string name="search_hint">Search Food</string>
+    <string name="title_fooditem_list">Food Items</string>
+    <string name="title_fooditem_detail">Food Item Detail</string>
 </resources>

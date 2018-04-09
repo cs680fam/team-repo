@@ -1,4 +1,4 @@
-package com.example.nicollettedessy.projectidea.models;
+package com.example.nicollettedessy.projectidea.services;
 
 import com.example.nicollettedessy.projectidea.data.entities.SearchResponseListItem;
 

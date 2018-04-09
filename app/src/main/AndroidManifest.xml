@@ -14,16 +14,31 @@
         <activity android:name=".EnterMeals">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <activity android:name=".AddMeal" />
-        <activity android:name=".TestActivity" />-->
         <activity android:name=".MealInformation" />
         <activity
-            android:name=".FoodSearchActivity"
-            android:label="@string/title_activity_food_search"
+            android:name=".FoodItemListActivity"
+            android:label="@string/title_fooditem_list"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".FoodItemDetailActivity"
+            android:label="@string/title_fooditem_detail"
+            android:parentActivityName=".FoodItemListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.nicollettedessy.projectidea.FoodItemListActivity" />
         </activity>
     </application>
 
