@@ -20,4 +20,9 @@ public class FoodItemCollectionProvider {
         ITEMS.add(item);
         ITEM_MAP.put(item.ndbno, item);
     }
+
+    public static void clear() {
+        ITEMS.clear();
+        ITEM_MAP.clear();
+    }
 }

@@ -13,4 +13,7 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.widget.SearchView" />
+    <item android:id="@+id/nearby"
+        android:title="@string/near_by"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>

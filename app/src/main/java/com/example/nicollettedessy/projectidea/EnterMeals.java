@@ -189,6 +189,10 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         switch (item.getItemId()) {
             case R.id.mealList:
                 break;
+            case R.id.nearby:
+                Intent intent = new Intent(this, NearbyActivity.class);
+                startActivity(intent);
+                break;
             case R.id.exit:
                 finish();
                 break;
