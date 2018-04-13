@@ -11,8 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.example.nicollettedessy.projectidea.data.database.AddFoodAsyncDatabaseTask;
+import com.example.nicollettedessy.projectidea.data.database.GetFoodByNdbnoAsyncDatabaseTask;
 import com.example.nicollettedessy.projectidea.data.entities.FoodEntity;
-import com.example.nicollettedessy.projectidea.services.AsyncDatabaseTask;
 import com.example.nicollettedessy.projectidea.services.IAsyncDatabaseListener;
 
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.List;
  */
 public class FoodItemDetailActivity extends AppCompatActivity {
 
+    private FoodEntity entity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,35 +35,40 @@ public class FoodItemDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        final String nbdno = getIntent().getStringExtra(FoodItemDetailFragment.ARG_ITEM_ID);
-
-        //TODO: Check DB for ndbno
-
-        new AsyncDatabaseTask<Void, List<FoodEntity>>(getApplicationContext(), new IAsyncDatabaseListener<List<FoodEntity>>() {
-            @Override
-            public void onDatabaseResponse(List<FoodEntity> response) {
-                Log.d("OnDBResponse", response.toString());
-            }
-        }).execute();
+        final String ndbno = getIntent().getStringExtra(FoodItemDetailFragment.ARG_ITEM_ID);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-/*                AsyncDatabaseTask task = new AsyncDatabaseTask(getApplicationContext(), new IAsyncDatabaseListener<Void>() {
-                    @Override
-                    public void onDatabaseResponse(Void response) {
-                        //Do stuff
-                    }
-                });
-
-                task.execute(nbdno);*/
+                if(entity == null) {
+                    new AddFoodAsyncDatabaseTask<String, Object>(getApplicationContext(), new IAsyncDatabaseListener<Object>() {
+                        @Override
+                        public void onDatabaseResponse(Object response) {
+                            Log.d("[AddedEntity]", "An entity was added");
+                        }
+                    }).execute(ndbno);
+                }
 
                 Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+
+        new GetFoodByNdbnoAsyncDatabaseTask<String, FoodEntity>(getApplicationContext(), new IAsyncDatabaseListener<FoodEntity>() {
+            @Override
+            public void onDatabaseResponse(FoodEntity response) {
+                if(response == null) {
+                    //TODO: set fab image to plus
+                    Log.d("[EntityNotRetrieved]", "An entity was not retrieved");
+                    return;
+                }
+
+                Log.d("[EntityRetrieved]", "An entity was retrieved" + response.getNdbno());
+
+                entity = response;
+            }
+        }).execute(ndbno);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();

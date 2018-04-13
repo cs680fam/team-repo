@@ -12,11 +12,11 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "MyFood")
 public class FoodEntity {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "NBDNO")
-    private String nbdno;
+    @ColumnInfo(name = "NDBNO")
+    private String ndbno;
 
     public int getId() {
         return id;
@@ -26,11 +26,11 @@ public class FoodEntity {
         this.id = id;
     }
 
-    public String getNbdno() {
-        return nbdno;
+    public String getNdbno() {
+        return ndbno;
     }
 
-    public void setNbdno(String nbdno) {
-        this.nbdno = nbdno;
+    public void setNdbno(String ndbno) {
+        this.ndbno = ndbno;
     }
 }

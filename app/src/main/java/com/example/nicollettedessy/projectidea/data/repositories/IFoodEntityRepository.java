@@ -25,6 +25,6 @@ public interface IFoodEntityRepository {
     @Delete
     void delete(FoodEntity foodEntity);
 
-    @Query("SELECT * FROM MyFood WHERE NBDNO == :ndbno")
+    @Query("SELECT * FROM MyFood WHERE NDBNO == :ndbno")
     FoodEntity getFood(String ndbno);
 }

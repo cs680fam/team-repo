@@ -1,9 +1,9 @@
-package com.example.nicollettedessy.projectidea.services;
+package com.example.nicollettedessy.projectidea.data.database;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import com.example.nicollettedessy.projectidea.data.repositories.ApplicationDatabase;
+import com.example.nicollettedessy.projectidea.data.database.ApplicationDatabase;
 
 /**
  * Created by pierrethelusma on 4/12/18.
