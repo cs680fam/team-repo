@@ -5,10 +5,17 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import com.example.nicollettedessy.projectidea.data.entities.FoodEntity;
+import com.example.nicollettedessy.projectidea.services.AsyncDatabaseTask;
+import com.example.nicollettedessy.projectidea.services.IAsyncDatabaseListener;
+
+import java.util.List;
 
 /**
  * An activity representing a single FoodItem detail screen. This
@@ -25,10 +32,31 @@ public class FoodItemDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        final String nbdno = getIntent().getStringExtra(FoodItemDetailFragment.ARG_ITEM_ID);
+
+        //TODO: Check DB for ndbno
+
+        new AsyncDatabaseTask<Void, List<FoodEntity>>(getApplicationContext(), new IAsyncDatabaseListener<List<FoodEntity>>() {
+            @Override
+            public void onDatabaseResponse(List<FoodEntity> response) {
+                Log.d("OnDBResponse", response.toString());
+            }
+        }).execute();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+/*                AsyncDatabaseTask task = new AsyncDatabaseTask(getApplicationContext(), new IAsyncDatabaseListener<Void>() {
+                    @Override
+                    public void onDatabaseResponse(Void response) {
+                        //Do stuff
+                    }
+                });
+
+                task.execute(nbdno);*/
+
                 Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
