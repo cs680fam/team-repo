@@ -25,19 +25,35 @@ import java.util.ArrayList;
 
 public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
+    //This creates an array list that will store meals, each row is intially blank
     private ArrayList<String> mealInformation = new ArrayList<String>(){{
         for(int i = 0; i < 30; i++){
             add("");
         }
     }};
+
+    //This creates an array adapter that will be used with the array list to list out meals
     private ArrayAdapter<String> adapt = null;
+
     private ListView listView;
+
+    //This variable will be used to track what row in the listview is clicked
     private static int positionInformation = 0;
-    String mealName;
-    String dateOfMeal;
-    SQLiteDatabase sqlitedb;
-    int i;
-    int mealID;
+
+    //This will store the name of a meal
+    private String mealName;
+
+    //This will store the date of a meal
+    private String dateOfMeal;
+
+    //This creates an instance of a sqlite database
+    private SQLiteDatabase sqlitedb;
+
+    //This will be used to track the location in the mealInformation arrayList
+    private int i;
+
+    //This will be used to store the id of a meal
+    private int mealID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +63,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
 
+        //This will initialize the array adapter and add it to the listview
         adapt = new ArrayAdapter<String> (this, R.layout.list_item, mealInformation);
         listView.setAdapter(adapt);
 
@@ -67,6 +84,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
 
         String displayMeals = "SELECT * FROM MEALTABLE ORDER BY strftime('%Y-%m-%d', MealDate) ASC";
 
+        //This creates a cursor with the displayMeals query
         Cursor c = sqlitedb.rawQuery(displayMeals, null);
 
         //This will loop through the meal table to get each meal
@@ -108,6 +126,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             dialogBuilder.setView(R.layout.custom);
         }
+
+        //This creates an alert dialog which will give options to add, update, or delete a meal
         AlertDialog dialog = dialogBuilder.create();
 
         dialog.setTitle("Meal Details");
@@ -118,12 +138,9 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
 
                 Intent intent = new Intent(getApplicationContext(), MealInformation.class);
                 intent.putExtra("positionIndex", positionInformation);
-                /**if(intentEnterMeal.hasExtra("mealName") && intentEnterMeal.hasExtra("dateOfMeal")){
-                 intent.putExtra("mealNameEntered", intentEnterMeal.getExtras().getString("mealName"));
-                 intent.putExtra("dateOfMealEntered", intentEnterMeal.getExtras().getString("dateOfMeal"));
-                 }**/
+
                 String allResults = mealInformation.get(positionInformation);
-                //if(!allResults.equals("")) {
+
                 if (allResults.indexOf("-") != -1) {
                     String[] allResultParts = allResults.split("-");
 
@@ -142,7 +159,6 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
                     intent.putExtra("mealIdentifier", mealID);
                 }
                 startActivity(intent);
-
 
 
             }
@@ -184,12 +200,9 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     @Override
-    /**This will do nothing if the Meal List option is selected,
-     or exit the application if the exit button is selected **/
+    //This will open up the NearbyActivity activity if the activity option is selected
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.mealList:
-                break;
             case R.id.nearby:
                 Intent intent = new Intent(this, NearbyActivity.class);
                 startActivity(intent);
