@@ -108,7 +108,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
         sqlitedb = openOrCreateDatabase("MealDB", Context.MODE_PRIVATE, null);
         ingredientEditText.setHint("Add ingredient");
         allMeals = "";
-        
+
         //This initializes the test to speech object
         narrator = new TextToSpeech(this, this);
 
@@ -154,7 +154,6 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                 boolean check = true;
 
                 for (int i = 0; i < ingredientArray.length; i++) {
-                    //Toast.makeText(getApplicationContext(), ingredientArray[i], Toast.LENGTH_LONG).show();
                     if ((i + 1) > ingredientInformation.size()) {
                         ingredientInformation.add((i + 1) + ". " + ingredientArray[i]);
                     } else {
