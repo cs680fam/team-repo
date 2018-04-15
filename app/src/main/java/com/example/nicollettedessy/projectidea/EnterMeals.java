@@ -73,10 +73,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         while(c.moveToNext()){
             String mealResult = c.getString(1);
             String dateResult = c.getString(2);
-            //if(!(mealResult + " - " + dateResult).equals(mealName + " - " + dateOfMeal)) {
                 mealInformation.set(i, mealResult + " - " + dateResult);
                 i++;
-            //}
         }
 
     }
@@ -85,6 +83,9 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     //This will create the options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        if(menu != null){
+            menu.findItem(R.id.mealList).setVisible(false);
+        }
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -192,9 +193,6 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             case R.id.nearby:
                 Intent intent = new Intent(this, NearbyActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.exit:
-                finish();
                 break;
         }
         return true;

@@ -5,9 +5,6 @@
     <item
         android:id="@+id/mealList"
         android:title="Meal List" />
-    <item
-        android:id="@+id/exit"
-        android:title="Exit" />
     <item android:id="@+id/search"
         android:title="@string/search"
         android:icon="@android:drawable/ic_menu_search"

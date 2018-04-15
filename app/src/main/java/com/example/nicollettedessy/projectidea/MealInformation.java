@@ -271,9 +271,6 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                 Intent intent = new Intent(this, EnterMeals.class);
                 startActivity(intent);
                 break;
-            case R.id.exit:
-                finish();
-                break;
         }
         return true;
     }
