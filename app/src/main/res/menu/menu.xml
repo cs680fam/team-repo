@@ -5,7 +5,18 @@
     <item
         android:id="@+id/mealList"
         android:title="Meal List" />
-    <item
-        android:id="@+id/exit"
-        android:title="Exit" />
+
+    <item android:id="@+id/email"
+        android:title="@string/email"
+        android:icon="@android:drawable/ic_dialog_email"
+        app:showAsAction="collapseActionView|ifRoom" />
+
+    <item android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
+    <item android:id="@+id/nearby"
+        android:title="@string/near_by"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>

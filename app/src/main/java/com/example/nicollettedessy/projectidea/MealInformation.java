@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class MealInformation extends AppCompatActivity implements AdapterView.OnItemClickListener, TextToSpeech.OnInitListener {
+
+    //This creates a bunch of variables for items found on the layout file for this activity
     private TextView mealNameTextView;
     private EditText mealNameEditText;
     private TextView dateTextView;
@@ -38,22 +41,49 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
     private Button addIngredientButton;
     private Button addMealButton;
     private Button updateMealButton;
+
+
+    //This creates an array list to track ingredients
     private ArrayList<String> ingredientInformation = new ArrayList<String>(){{
         for(int i = 0; i < 5; i++){
             add((i+1) + ". ");
         }
     }};
+
+    //This creates an array adapter to be used with the ingredientInformation array list
     private ArrayAdapter<String> ingredientAdapt = null;
+
+    //This creates an intent that will be used to get intent information from the EnterMeals class
     private Intent intentEnterMeals;
+
+    //This will be used to track the position in the listview from the Enter Meals class
     private int positionIndex;
+
+    //This creates a sqlite database object
     private SQLiteDatabase sqlitedb;
+
+    //This is a global variable used to track the location in the list view for an ingredient
     private static int ingredientPosition;
+
+    //This will help to track ingredients
     private String allMeals;
+
+    //This will help to store the id of a meal
     private int mealID;
+
+    //This will be used to store updates about a meal name
     private String mealUpdate;
+
+    //This will be used to store updates about the date of a meal
     private String dateUpdate;
+
+    //This will also be used to help with ingredient information queried from the sqlite database
     private String ingredientList = null;
+
+    //This will be used to store ingredients pulled out from the ingredientList String
     private String[] ingredientArray;
+
+    //This will be used to speak out about meal information
     private TextToSpeech narrator;
 
 
@@ -61,6 +91,8 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_meal);
+
+        //This initializes many variables
         mealNameTextView = (TextView) findViewById(R.id.mealNameTextView);
         mealNameEditText = (EditText) findViewById(R.id.mealNameEditText);
         dateTextView = (TextView) findViewById(R.id.dateTextView);
@@ -78,6 +110,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
         sqlitedb = openOrCreateDatabase("MealDB", Context.MODE_PRIVATE, null);
         ingredientEditText.setHint("Add ingredient");
         allMeals = "";
+
         //This initializes the test to speech object
         narrator = new TextToSpeech(this, this);
 
@@ -123,7 +156,6 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                 boolean check = true;
 
                 for (int i = 0; i < ingredientArray.length; i++) {
-                    //Toast.makeText(getApplicationContext(), ingredientArray[i], Toast.LENGTH_LONG).show();
                     if ((i + 1) > ingredientInformation.size()) {
                         ingredientInformation.add((i + 1) + ". " + ingredientArray[i]);
                     } else {
@@ -149,6 +181,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
 
                 switch (view.getId()) {
 
+                    //If the add meal button is clicked, the information is inserted into the MealTable table
                         case R.id.addMealButton:
                             for(int i = 0; i < ingredientInformation.size(); i++) {
                                 if (!(ingredientInformation.get(i).equals((i + 1) + ". "))) {
@@ -169,13 +202,10 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 narrator.speak("You have the ingredients: " + allMeals + " listed for " + mealName, TextToSpeech.QUEUE_FLUSH, null, "Id 0");
                             }
-                        //intentEnterMeal = new Intent(getApplicationContext(), EnterMeals.class);
-                        //intentEnterMeal.putExtra("positionUpdate", positionIndex);
-                        //startActivity(intentEnterMeal);
 
                         break;
 
-
+                        //If the update button is clicked, then the meal information already in the MealTable is updated with new information
                     case R.id.updateMealButton:
                         for(int i = 0; i < ingredientInformation.size(); i++) {
                             if (!(ingredientInformation.get(i).equals((i + 1) + ". "))) {
@@ -197,11 +227,6 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             narrator.speak("You have the ingredients: " + allMeals + " listed for " + mealName, TextToSpeech.QUEUE_FLUSH, null, "Id 0");
                         }
-                        //intentEnterMeal = new Intent(getApplicationContext(), EnterMeals.class);
-                        //intentEnterMeal.putExtra("positionUpdate", positionIndex);
-                        //startActivity(intentEnterMeal);
-
-                        //Toast.makeText(getApplicationContext(), mealID + "", Toast.LENGTH_LONG).show();
                        break;
 
                    //This will add the new ingredient if the "Add" button is clicked
@@ -247,6 +272,8 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
 
 
         };
+
+        //This adds on click listeners for various buttons
         addIngredientButton.setOnClickListener(listener);
         addMealButton.setOnClickListener(listener);
         updateMealButton.setOnClickListener(listener);
@@ -259,20 +286,20 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
     //This will create the options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        if(menu != null){
+            menu.findItem(R.id.nearby).setVisible(false);
+            menu.findItem(R.id.search).setVisible(false);
+        }
         return true;
     }
 
     @Override
-    /**This will go back to the EnterMeals activity if the Meal List option is selected,
-    or exit the application if the exit button is selected **/
+    //This will go back to the EnterMeals activity if the Meal List option is selected
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mealList:
                 Intent intent = new Intent(this, EnterMeals.class);
                 startActivity(intent);
-                break;
-            case R.id.exit:
-                finish();
                 break;
         }
         return true;
@@ -306,10 +333,8 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
                 public void onClick(DialogInterface dialog, int whichButton) {
 
                     String result = input.getText().toString();
-                        //if (result != "" || ingredientPosition > 4) {
                             ingredientInformation.set(ingredientPosition, (ingredientPosition + 1) + ". " + result);
                             ingredientAdapt.notifyDataSetChanged();
-                        //}
                 }
             });
 
@@ -344,7 +369,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
             dialog.show();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Please select a valid line to update or delete", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Select a valid line to update or delete", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -359,4 +384,16 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
             }
         }
     }
+
+    //This allows everything to navigate back to the EnterMeals class if the back button is pressed 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            Intent intent = new Intent(getApplicationContext(), EnterMeals.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 }

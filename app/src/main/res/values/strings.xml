@@ -1,7 +1,16 @@
 <resources>
-    <string name="app_name">ProjectIdea</string>
+    <string name="app_name">My Food.io</string>
     <string name="title_activity_food_search">Food Search</string>
     <string name="search">Search</string>
-    <string name="SEND">Search</string>
+    <string name="search_hint">Search Food</string>
+    <string name="title_fooditem_list">Food Items</string>
+    <string name="title_fooditem_detail">Food Item Detail</string>
+    <string name="no_results">No results</string>
+    <string name="title_activity_nearby">Nearby Supermarkets and Restaurants</string>
+    <string name="near_by">Near By</string>
+    <string name="email">Email This List</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_nearby_v2">NearbyV2Activity</string>
 </resources>

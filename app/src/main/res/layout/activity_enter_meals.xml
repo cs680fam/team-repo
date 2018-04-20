@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -29,11 +30,5 @@
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         />
-
-    <Button
-        android:id="@+id/send"
-        android:text="@string/SEND"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>
 </ScrollView>
