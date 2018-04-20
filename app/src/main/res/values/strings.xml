@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProjectIdea</string>
+    <string name="app_name">My Food.io</string>
     <string name="title_activity_food_search">Food Search</string>
     <string name="search">Search</string>
     <string name="search_hint">Search Food</string>

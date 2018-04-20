@@ -17,8 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     //This creates an array adapter that will be used with the array list to list out meals
     private ArrayAdapter<String> adapt = null;
 
+    //This creates a listview to store the meal information
     private ListView listView;
 
     //This variable will be used to track what row in the listview is clicked
@@ -54,6 +58,12 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
 
     //This will be used to store the id of a meal
     private int mealID;
+
+    //This will be used to get the value of text in a row in the listview
+    private String listItemString = "";
+
+    //This will be used to set the options buttons when a listview item is clicked
+    private String optionButton = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +131,16 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             positionInformation = position;
+            listItemString = mealInformation.get(positionInformation);
+
+            //This sets the value of the listItemString so when a listview item is clicked, depending
+            //on whether the row is empty or not, there will be the option to update the meal or add a meal
+            if(listItemString.equals("")){
+                optionButton = "Add Meal";
+            }
+            else{
+                optionButton = "Update";
+            }
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -130,10 +150,22 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         //This creates an alert dialog which will give options to add, update, or delete a meal
         AlertDialog dialog = dialogBuilder.create();
 
-        dialog.setTitle("Meal Details");
+        //This will check if a particular row in the list has "-". If it does, it will split up the
+        //string into two parts and set the title of the dialog box to the name of the meal
+        if (listItemString.indexOf("-") != -1) {
+            listItemString = "Meal: " + listItemString.substring(0, listItemString.indexOf("-"));
+            dialog.setTitle(listItemString);
+        }
 
+        //Otherwise the title of the dialog box is "Meal Options"
+        else{
+            dialog.setTitle("Meal Options");
+        }
 
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Add or Update", new DialogInterface.OnClickListener() {
+        /**Depending on whether we are adding or updating a meal, this button the alert dialog will say "Add Meal"
+        or "Update". If we are adding a meal, the MealInformation class opens, or if we are updating a meal, the
+        MealInformation class opens after querying the database for the meal ID of the associated meal in the listview **/
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, optionButton, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
                 Intent intent = new Intent(getApplicationContext(), MealInformation.class);
@@ -164,7 +196,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             }
         });
 
-        //This will only display the delete button if the list item is not blank
+        /**This will only display the delete button if the list item is not blank. If it is not blank,
+        then there is the option to delete a meal **/
         if(!mealInformation.get(positionInformation).equals("")) {
             dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Delete", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
@@ -200,7 +233,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     @Override
-    //This will open up the NearbyActivity activity if the activity option is selected
+    //This will open up the NearbyActivity activity if the "Nearby" option is selected
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nearby:
@@ -211,7 +244,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         return true;
     }
 
-    //To close the database
+    //This will close the database when another activity is started
     @Override
     protected void onPause() {
         super.onPause();

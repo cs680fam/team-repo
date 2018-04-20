@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -179,6 +180,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
 
                 switch (view.getId()) {
 
+                    //If the add meal button is clicked, the information is inserted into the MealTable table
                         case R.id.addMealButton:
                             for(int i = 0; i < ingredientInformation.size(); i++) {
                                 if (!(ingredientInformation.get(i).equals((i + 1) + ". "))) {
@@ -202,7 +204,7 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
 
                         break;
 
-
+                        //If the update button is clicked, then the meal information already in the MealTable is updated with new information
                     case R.id.updateMealButton:
                         for(int i = 0; i < ingredientInformation.size(); i++) {
                             if (!(ingredientInformation.get(i).equals((i + 1) + ". "))) {
@@ -283,6 +285,10 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
     //This will create the options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        if(menu != null){
+            menu.findItem(R.id.nearby).setVisible(false);
+            menu.findItem(R.id.search).setVisible(false);
+        }
         return true;
     }
 
@@ -377,4 +383,16 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
             }
         }
     }
+
+    //This allows everything to navigate back to the EnterMeals class if the back button is pressed 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            Intent intent = new Intent(getApplicationContext(), EnterMeals.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 }
