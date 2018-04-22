@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.nicollettedessy.projectidea.data.entities.FoodReportResponse;
+import com.example.nicollettedessy.projectidea.data.entities.SearchResponseListItem;
 import com.example.nicollettedessy.projectidea.data.repositories.USDAFoodCompositionRepository;
 
 /**
@@ -29,10 +30,13 @@ public class FoodItemDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_NDBMO = "ndbno";
+    public static final String ARG_FOOD_REPORT_RESPONSE = "food_report_response";
 
     private final USDAFoodCompositionRepository repository = new USDAFoodCompositionRepository();
     private FragmentActivity _activity;
     private View _rootView;
+    private FoodReportResponse _item;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -45,13 +49,14 @@ public class FoodItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_NDBMO)) {
-            String ndbno = getArguments().getString(ARG_NDBMO);
-
-            getFoodBy(ndbno);
+        if (getArguments().containsKey(ARG_FOOD_REPORT_RESPONSE)) {
+            _item = getArguments().getParcelable(ARG_FOOD_REPORT_RESPONSE);
         }
 
-        _activity = this.getActivity();
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle((CharSequence) _item.foods.get(0).food.desc.sd);
+        }
     }
 
     @Override
@@ -59,56 +64,29 @@ public class FoodItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         _rootView = inflater.inflate(R.layout.fooditem_detail, container, false);
 
+        if (_item != null) {
+            ListView lvNutrient = (ListView) _rootView.findViewById(R.id.fooditem_detail_nutrients);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.nutrient_list_item, _item.foods.get(0).food.getNutrientsAsStringArrayList()) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    view.setMinimumHeight(100);
+                    return view;
+                }
+            };
+
+            lvNutrient.setAdapter(adapter);
+
+            ViewGroup.LayoutParams params = lvNutrient.getLayoutParams();
+            params.height = 100 * _item.foods.get(0).food.nutrients.size();
+
+            lvNutrient.setLayoutParams(params);
+            lvNutrient.requestLayout();
+
+            ((TextView) _rootView.findViewById(R.id.fooditem_detail_food_group)).setText(_item.foods.get(0).food.desc.fg);
+        }
+
         return _rootView;
-    }
-
-    private void getFoodBy(String ndbno) {
-        repository.GetFoodBy(ndbno, getContext(), this.getListener(), this.getErrorListener());
-    }
-
-    private Response.Listener<FoodReportResponse> getListener() {
-        return new Response.Listener<FoodReportResponse>() {
-
-            @Override
-            public void onResponse(FoodReportResponse response) {
-                Activity activity = _activity;
-                CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-                if (appBarLayout != null) {
-                    appBarLayout.setTitle((CharSequence) response.foods.get(0).food.desc.sd);
-                }
-
-                if (response != null) {
-                    ListView lvNutrient = (ListView) activity.findViewById(R.id.fooditem_detail_nutrients);
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.nutrient_list_item, response.foods.get(0).food.getNutrientsAsStringArrayList()) {
-                        @Override
-                        public View getView(int position, View convertView, ViewGroup parent) {
-                            View view = super.getView(position, convertView, parent);
-                            view.setMinimumHeight(100);
-                            return view;
-                        }
-                    };
-                    lvNutrient.setAdapter(adapter);
-
-                    ViewGroup.LayoutParams params = lvNutrient.getLayoutParams();
-                    params.height = 100 * response.foods.get(0).food.nutrients.size();
-
-                    lvNutrient.setLayoutParams(params);
-                    lvNutrient.requestLayout();
-
-                    ((TextView) _rootView.findViewById(R.id.fooditem_detail_food_group)).setText(response.foods.get(0).food.desc.fg);
-                }
-            }
-        };
-    }
-
-    private Response.ErrorListener getErrorListener() {
-        return new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        };
     }
 }

@@ -26,26 +26,17 @@ public class SimpleItemRecyclerViewAdapter
 
     private final FoodItemListActivity parent;
     private final List<SearchResponseListItem> items;
-    private final boolean isTwoPane;
+
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             SearchResponseListItem item = (SearchResponseListItem) view.getTag();
-            if (isTwoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putString(FoodItemDetailFragment.ARG_NDBMO, item.ndbno);
-                FoodItemDetailFragment fragment = new FoodItemDetailFragment();
-                fragment.setArguments(arguments);
-                parent.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fooditem_detail_container, fragment)
-                        .commit();
-            } else {
-                Context context = view.getContext();
-                Intent intent = new Intent(context, FoodItemDetailActivity.class);
-                intent.putExtra(FoodItemDetailFragment.ARG_NDBMO, item.ndbno);
 
-                context.startActivity(intent);
-            }
+            Context context = view.getContext();
+            Intent intent = new Intent(context, FoodItemDetailActivity.class);
+            intent.putExtra(FoodItemDetailFragment.ARG_NDBMO, item.ndbno);
+
+            context.startActivity(intent);
         }
     };
 
@@ -54,7 +45,6 @@ public class SimpleItemRecyclerViewAdapter
                                   boolean isTwoPane) {
         this.items = items;
         this.parent = parent;
-        this.isTwoPane = isTwoPane;
     }
 
     @Override

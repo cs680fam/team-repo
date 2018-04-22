@@ -11,10 +11,16 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.nicollettedessy.projectidea.data.database.AddFoodAsyncDatabaseTask;
 import com.example.nicollettedessy.projectidea.data.database.GetFoodByNdbnoAsyncDatabaseTask;
 import com.example.nicollettedessy.projectidea.data.entities.FoodEntity;
+import com.example.nicollettedessy.projectidea.data.entities.FoodReportResponse;
+import com.example.nicollettedessy.projectidea.data.entities.SearchResponseListItem;
+import com.example.nicollettedessy.projectidea.data.repositories.USDAFoodCompositionRepository;
 import com.example.nicollettedessy.projectidea.services.Events;
 import com.example.nicollettedessy.projectidea.services.IAsyncDatabaseListener;
 
@@ -28,8 +34,9 @@ import java.util.List;
  */
 public class FoodItemDetailActivity extends AppCompatActivity {
 
-    private FoodEntity entity;
-
+    private final USDAFoodCompositionRepository repository = new USDAFoodCompositionRepository();
+    private FloatingActionButton _fab;
+    private FoodReportResponse _item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +47,19 @@ public class FoodItemDetailActivity extends AppCompatActivity {
 
         final String ndbno = getIntent().getStringExtra(FoodItemDetailFragment.ARG_NDBMO);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        getFoodBy(ndbno);
+
+        _fab = (FloatingActionButton) findViewById(R.id.fab);
+        _fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if(entity == null) {
-                new AddFoodAsyncDatabaseTask<String, Object>(getApplicationContext(), new IAsyncDatabaseListener<Object>() {
+                new AddFoodAsyncDatabaseTask<FoodReportResponse, Object>(getApplicationContext(), new IAsyncDatabaseListener<Object>() {
                     @Override
                     public void onDatabaseResponse(Object response) {
                         Log.d(Events.FoodEntityInsertSucceeded.name()  , Events.FoodEntityInsertSucceeded.msg());
+                        Toast.makeText(getApplicationContext(), "Food has been added", Toast.LENGTH_LONG).show();
                     }
-                }).execute(ndbno);
-            }
+                }).execute(_item);
             }
         });
 
@@ -60,17 +68,31 @@ public class FoodItemDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
 
-        if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            arguments.putString(FoodItemDetailFragment.ARG_NDBMO,
-                    getIntent().getStringExtra(FoodItemDetailFragment.ARG_NDBMO));
-            FoodItemDetailFragment fragment = new FoodItemDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fooditem_detail_container, fragment)
-                    .commit();
-        }
+    private void getFoodBy(String ndbno) {
+        repository.GetFoodBy(ndbno, getApplicationContext(), this.getListener(), this.getErrorListener());
+    }
+
+    private Response.Listener<FoodReportResponse> getListener() {
+        return new Response.Listener<FoodReportResponse>() {
+
+            @Override
+            public void onResponse(FoodReportResponse response) {
+
+                _item = response;
+
+                Bundle arguments = new Bundle();
+                arguments.putParcelable(FoodItemDetailFragment.ARG_FOOD_REPORT_RESPONSE,
+                        response);
+
+                FoodItemDetailFragment fragment = new FoodItemDetailFragment();
+                fragment.setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fooditem_detail_container, fragment)
+                        .commit();
+            }
+        };
     }
 
     @Override
@@ -81,5 +103,15 @@ public class FoodItemDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Response.ErrorListener getErrorListener() {
+        return new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        };
     }
 }
