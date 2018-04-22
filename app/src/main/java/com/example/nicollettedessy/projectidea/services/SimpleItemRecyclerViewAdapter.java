@@ -33,7 +33,7 @@ public class SimpleItemRecyclerViewAdapter
             SearchResponseListItem item = (SearchResponseListItem) view.getTag();
             if (isTwoPane) {
                 Bundle arguments = new Bundle();
-                arguments.putString(FoodItemDetailFragment.ARG_ITEM_ID, item.ndbno);
+                arguments.putString(FoodItemDetailFragment.ARG_NDBMO, item.ndbno);
                 FoodItemDetailFragment fragment = new FoodItemDetailFragment();
                 fragment.setArguments(arguments);
                 parent.getSupportFragmentManager().beginTransaction()
@@ -42,7 +42,7 @@ public class SimpleItemRecyclerViewAdapter
             } else {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, FoodItemDetailActivity.class);
-                intent.putExtra(FoodItemDetailFragment.ARG_ITEM_ID, item.ndbno);
+                intent.putExtra(FoodItemDetailFragment.ARG_NDBMO, item.ndbno);
 
                 context.startActivity(intent);
             }
@@ -66,7 +66,6 @@ public class SimpleItemRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.tvId.setText(items.get(position).ndbno);
         holder.tvContent.setText(items.get(position).name);
 
         holder.itemView.setTag(items.get(position));
@@ -79,12 +78,10 @@ public class SimpleItemRecyclerViewAdapter
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvId;
         final TextView tvContent;
 
         ViewHolder(View view) {
             super(view);
-            tvId = (TextView) view.findViewById(R.id.id_text);
             tvContent = (TextView) view.findViewById(R.id.content);
         }
     }

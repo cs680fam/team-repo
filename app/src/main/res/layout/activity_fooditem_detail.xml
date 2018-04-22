@@ -16,6 +16,7 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -46,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="#33E9FF"
         app:layout_anchor="@+id/fooditem_detail_container"
         app:layout_anchorGravity="top|end"
         app:srcCompat="@drawable/ic_add_circle_white_36px" />

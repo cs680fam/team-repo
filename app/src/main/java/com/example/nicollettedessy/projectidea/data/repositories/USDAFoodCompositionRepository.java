@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.android.volley.Response;
-import com.example.nicollettedessy.projectidea.data.entities.FoodResponse;
+import com.example.nicollettedessy.projectidea.data.entities.FoodReportResponse;
 import com.example.nicollettedessy.projectidea.services.GsonRequest;
 import com.example.nicollettedessy.projectidea.services.HttpRequestQueue;
 import com.example.nicollettedessy.projectidea.data.entities.SearchResponse;
@@ -32,6 +32,7 @@ public class USDAFoodCompositionRepository {
             .appendPath(NDB_PATH)
             .appendPath(SEARCH_PATH)
             .appendQueryParameter("format", "json")
+            .appendQueryParameter("ds", "Standard Reference")
             .appendQueryParameter("q", searchCriteria)
             .appendQueryParameter("sort", "r")
             .appendQueryParameter("max", "25")
@@ -44,7 +45,7 @@ public class USDAFoodCompositionRepository {
         HttpRequestQueue.getInstance(applicationContext).addRequest(request);
     }
 
-    public void GetFoodBy(String ndbno, Context applicationContext, Response.Listener<FoodResponse> listener, Response.ErrorListener errorListener)
+    public void GetFoodBy(String ndbno, Context applicationContext, Response.Listener<FoodReportResponse> listener, Response.ErrorListener errorListener)
     {
         Uri uri = new Uri.Builder()
                 .scheme(SCHEME)
@@ -54,11 +55,11 @@ public class USDAFoodCompositionRepository {
                 .appendPath(FOOD_REPORT_PATH)
                 .appendQueryParameter("format", "json")
                 .appendQueryParameter("ndbno", ndbno)
-                .appendQueryParameter("type", "b")
+                .appendQueryParameter("type", "f")
                 .appendQueryParameter("api_key", USDA_FOOD_COMPOSITION_API_KEY)
                 .build();
 
-        GsonRequest request = new GsonRequest(uri.toString(), FoodResponse.class, listener, errorListener);
+        GsonRequest request = new GsonRequest(uri.toString(), FoodReportResponse.class, listener, errorListener);
 
         HttpRequestQueue.getInstance(applicationContext).addRequest(request);
     }

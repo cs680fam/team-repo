@@ -25,7 +25,7 @@ public class AddFoodAsyncDatabaseTask<T, V> extends AsyncTask<T, Void, V> {
 
         FoodEntity entity = new FoodEntity();
 
-        entity.setNdbno((String) params[0]);
+        entity.ndbno =(String) params[0];
         ApplicationDatabaseProvider.getApplicationDatabase(this.context).repository().add(entity);
 
         return null;

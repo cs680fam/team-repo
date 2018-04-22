@@ -1,9 +1,47 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fooditem_detail"
-    style="?android:attr/textAppearanceLarge"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:textIsSelectable="true"
-    tools:context="com.example.nicollettedessy.projectidea.FoodItemDetailFragment" />
+ <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fooditem_detail_food_group_label"
+            android:text="Food Group:"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="com.example.nicollettedessy.projectidea.FoodItemDetailFragment" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/fooditem_detail_food_group"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="com.example.nicollettedessy.projectidea.FoodItemDetailFragment" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fooditem_detail_nutrients_label"
+            android:text="Nutrients per 100g:"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="com.example.nicollettedessy.projectidea.FoodItemDetailFragment" />
+
+        <ListView
+            android:id="@+id/fooditem_detail_nutrients"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:layout_marginLeft="30dp" />
+    </LinearLayout>

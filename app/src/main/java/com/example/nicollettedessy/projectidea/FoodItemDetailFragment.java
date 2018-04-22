@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.nicollettedessy.projectidea.data.entities.FoodResponse;
-import com.example.nicollettedessy.projectidea.data.entities.SearchResponse;
-import com.example.nicollettedessy.projectidea.data.entities.SearchResponseListItem;
+import com.example.nicollettedessy.projectidea.data.entities.FoodReportResponse;
 import com.example.nicollettedessy.projectidea.data.repositories.USDAFoodCompositionRepository;
-import com.example.nicollettedessy.projectidea.services.FoodItemCollectionProvider;
 
 /**
  * A fragment representing a single FoodItem detail screen.
@@ -28,14 +28,11 @@ public class FoodItemDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "ndbno";
-
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private SearchResponseListItem mItem;
+    public static final String ARG_NDBMO = "ndbno";
 
     private final USDAFoodCompositionRepository repository = new USDAFoodCompositionRepository();
+    private FragmentActivity _activity;
+    private View _rootView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,41 +45,59 @@ public class FoodItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            mItem = FoodItemCollectionProvider.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+        if (getArguments().containsKey(ARG_NDBMO)) {
+            String ndbno = getArguments().getString(ARG_NDBMO);
 
-            getFoodBy(mItem.ndbno);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.name);
-            }
+            getFoodBy(ndbno);
         }
+
+        _activity = this.getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fooditem_detail, container, false);
+        _rootView = inflater.inflate(R.layout.fooditem_detail, container, false);
 
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.fooditem_detail)).setText(mItem.group);
-        }
-
-        return rootView;
+        return _rootView;
     }
 
     private void getFoodBy(String ndbno) {
         repository.GetFoodBy(ndbno, getContext(), this.getListener(), this.getErrorListener());
     }
 
-    private Response.Listener<FoodResponse> getListener() {
-        return new Response.Listener<FoodResponse>() {
+    private Response.Listener<FoodReportResponse> getListener() {
+        return new Response.Listener<FoodReportResponse>() {
 
             @Override
-            public void onResponse(FoodResponse response) {
-                System.out.println(response);
+            public void onResponse(FoodReportResponse response) {
+                Activity activity = _activity;
+                CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+                if (appBarLayout != null) {
+                    appBarLayout.setTitle((CharSequence) response.foods.get(0).food.desc.sd);
+                }
+
+                if (response != null) {
+                    ListView lvNutrient = (ListView) activity.findViewById(R.id.fooditem_detail_nutrients);
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.nutrient_list_item, response.foods.get(0).food.getNutrientsAsStringArrayList()) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            View view = super.getView(position, convertView, parent);
+                            view.setMinimumHeight(100);
+                            return view;
+                        }
+                    };
+                    lvNutrient.setAdapter(adapter);
+
+                    ViewGroup.LayoutParams params = lvNutrient.getLayoutParams();
+                    params.height = 100 * response.foods.get(0).food.nutrients.size();
+
+                    lvNutrient.setLayoutParams(params);
+                    lvNutrient.requestLayout();
+
+                    ((TextView) _rootView.findViewById(R.id.fooditem_detail_food_group)).setText(response.foods.get(0).food.desc.fg);
+                }
             }
         };
     }

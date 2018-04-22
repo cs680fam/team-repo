@@ -6,8 +6,7 @@
     android:name="com.example.nicollettedessy.projectidea.FoodItemListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
+    android:background="#33E9FF"
     tools:context="com.example.nicollettedessy.projectidea.FoodItemListActivity"
     tools:listitem="@layout/fooditem_list_content" />

@@ -13,24 +13,8 @@ import android.arch.persistence.room.PrimaryKey;
 public class FoodEntity {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    public int id;
 
     @ColumnInfo(name = "NDBNO")
-    private String ndbno;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNdbno() {
-        return ndbno;
-    }
-
-    public void setNdbno(String ndbno) {
-        this.ndbno = ndbno;
-    }
+    public String ndbno;
 }
