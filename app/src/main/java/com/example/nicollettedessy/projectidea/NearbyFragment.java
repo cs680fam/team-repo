@@ -67,8 +67,6 @@ public class NearbyFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-
-        tryGetLastLocation();
     }
 
     private OnCompleteListener<Location> getOnCompleteListener()
@@ -126,6 +124,8 @@ public class NearbyFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        tryGetLastLocation();
     }
 
     @Override
