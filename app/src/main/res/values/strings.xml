@@ -8,4 +8,5 @@
     <string name="no_results">No results</string>
     <string name="title_activity_nearby">Nearby Supermarkets and Restaurants</string>
     <string name="near_by">Near By</string>
+    <string name="email">Email This List!</string>
 </resources>

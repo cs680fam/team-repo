@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -101,8 +102,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         while(c.moveToNext()){
             String mealResult = c.getString(1);
             String dateResult = c.getString(2);
-                mealInformation.set(i, mealResult + " - " + dateResult);
-                i++;
+            mealInformation.set(i, mealResult + " - " + dateResult);
+            i++;
         }
 
     }
@@ -130,17 +131,17 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     //This will respond to an item being clicked
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            positionInformation = position;
-            listItemString = mealInformation.get(positionInformation);
+        positionInformation = position;
+        listItemString = mealInformation.get(positionInformation);
 
-            //This sets the value of the listItemString so when a listview item is clicked, depending
-            //on whether the row is empty or not, there will be the option to update the meal or add a meal
-            if(listItemString.equals("")){
-                optionButton = "Add Meal";
-            }
-            else{
-                optionButton = "Update";
-            }
+        //This sets the value of the listItemString so when a listview item is clicked, depending
+        //on whether the row is empty or not, there will be the option to update the meal or add a meal
+        if(listItemString.equals("")){
+            optionButton = "Add Meal";
+        }
+        else{
+            optionButton = "Update";
+        }
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -163,8 +164,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         }
 
         /**Depending on whether we are adding or updating a meal, this button the alert dialog will say "Add Meal"
-        or "Update". If we are adding a meal, the MealInformation class opens, or if we are updating a meal, the
-        MealInformation class opens after querying the database for the meal ID of the associated meal in the listview **/
+         or "Update". If we are adding a meal, the MealInformation class opens, or if we are updating a meal, the
+         MealInformation class opens after querying the database for the meal ID of the associated meal in the listview **/
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, optionButton, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -197,7 +198,7 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
         });
 
         /**This will only display the delete button if the list item is not blank. If it is not blank,
-        then there is the option to delete a meal **/
+         then there is the option to delete a meal **/
         if(!mealInformation.get(positionInformation).equals("")) {
             dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Delete", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
@@ -225,9 +226,9 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             });
         }
         dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
         dialog.show();
 
     }
@@ -239,6 +240,17 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             case R.id.nearby:
                 Intent intent = new Intent(this, NearbyActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.email:
+                Intent msg = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+                msg.putExtra(Intent.EXTRA_EMAIL, new String[] {"JayPerfetto@gmail.com"});
+                msg.putExtra(Intent.EXTRA_TEXT, "Hey - I just created a meal list using myfood.io! Try it out!");
+                msg.putExtra(Intent.EXTRA_SUBJECT, "New Meal Tracker App!");
+
+                //check to be sure email is installed on handset
+                if (msg.resolveActivity(getPackageManager()) != null) {
+                    startActivity(msg);
+                }
                 break;
         }
         return true;
