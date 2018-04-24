@@ -285,9 +285,13 @@ public class MealInformation extends AppCompatActivity implements AdapterView.On
     //This will create the options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        //This hides menu options that are only supposed to be displayed on the first
+        //activity when the app opens 
         if(menu != null){
             menu.findItem(R.id.nearby).setVisible(false);
             menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.email).setVisible(false);
         }
         return true;
     }
