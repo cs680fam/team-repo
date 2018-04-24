@@ -146,8 +146,7 @@ public class NearbyFragment extends Fragment implements OnMapReadyCallback {
     private void tryGetLastLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), ACCESS_LOCATION_PERMISSIONS,
-                    REQUEST_ACCESS_LOCATION);
+            requestPermissions(ACCESS_LOCATION_PERMISSIONS, REQUEST_ACCESS_LOCATION);
             return;
         }
 
