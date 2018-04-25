@@ -1,6 +1,9 @@
 package com.example.nicollettedessy.projectidea;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,6 +38,14 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             add("");
         }
     }};
+
+
+    private NotificationManager mNotificationManager;
+    private Notification notifyDetails;
+    private int SIMPLE_NOTIFICATION_ID = 112233;
+    private String contentTitle = "Don't forget to add in meal information!";
+    private String contentText = "Click me to go to your meal list";
+    private String tickerText = "New Alert, Click Me !!!";
 
     //This creates an array adapter that will be used with the array list to list out meals
     private ArrayAdapter<String> adapt = null;
@@ -105,6 +116,38 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
             mealInformation.set(i, mealResult + " - " + dateResult);
             i++;
         }
+
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+        Intent notifyIntent = new Intent(this, EnterMeals.class);
+
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notifyDetails =
+                new Notification.Builder(this)
+                        .setContentIntent(pendingIntent)
+
+                        .setContentTitle(contentTitle)
+                        .setContentText(contentText)
+
+                        .setTicker(tickerText)
+
+                        .setWhen(System.currentTimeMillis())
+
+                        .setAutoCancel(true)
+
+
+                        .setVibrate(new long[]{1000, 1000, 1000, 1000})
+
+                        .setSmallIcon(R.mipmap.ic_launcher)
+
+
+                        .setLights(Integer.MAX_VALUE, 500, 500)
+
+                        .build();
 
     }
 
@@ -238,6 +281,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nearby:
+                mNotificationManager.notify(SIMPLE_NOTIFICATION_ID,
+                        notifyDetails);
                 Intent intent = new Intent(this, NearbyActivity.class);
                 startActivity(intent);
                 break;
