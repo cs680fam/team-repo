@@ -24,10 +24,25 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Intent;
+
 
 import java.util.ArrayList;
 
 public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemClickListener{
+
+
+    private NotificationManager mNotificationManager;
+    private Notification notifyDetails;
+    private int SIMPLE_NOTFICATION_ID;
+    private String contentTitle = " Notification ";
+    private String contentText = "Try Seaching for food";
+    private String tickerText = "New Alert, Click Me !!!";
+
 
     //This creates an array list that will store meals, each row is intially blank
     private ArrayList<String> mealInformation = new ArrayList<String>(){{
@@ -70,6 +85,42 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_meals);
+
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        //create intent for action when notification selected
+        //from expanded status bar
+        Intent notifyIntent = new Intent(this, EnterMeals.class);
+
+        //create pending intent to wrap intent so that it
+        //will fire when notification selected.
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //build notification object and set parameters
+        notifyDetails =
+                new Notification.Builder(this)
+                        .setContentIntent(pendingIntent)
+
+                        .setContentTitle(contentTitle)   //set Notification text and icon
+                        .setContentText(contentText)
+                        .setSmallIcon(R.drawable.droid)
+                        .setTicker(tickerText)            //set status bar text
+
+                        .setWhen(System.currentTimeMillis())    //timestamp when event occurs
+
+                        .setAutoCancel(true)     //cancel Notification after clicking on it
+
+                        //set Android to vibrate when notified
+                        .setVibrate(new long[]{1000, 1000, 1000, 1000})
+
+                        // flash LED (color, on in millisec, off)
+                        //doesn't work for all handsets
+                        .setLights(Integer.MAX_VALUE, 500, 500)
+
+                        .build();
+
+
 
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
@@ -133,6 +184,9 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         positionInformation = position;
         listItemString = mealInformation.get(positionInformation);
+
+        // mNotificationManager.notify(SIMPLE_NOTFICATION_ID,
+       //  notifyDetails);
 
         //This sets the value of the listItemString so when a listview item is clicked, depending
         //on whether the row is empty or not, there will be the option to update the meal or add a meal
@@ -236,6 +290,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     //This will open up the NearbyActivity activity if the "Nearby" option is selected
     public boolean onOptionsItemSelected(MenuItem item) {
+
+
         switch (item.getItemId()) {
             case R.id.nearby:
                 Intent intent = new Intent(this, NearbyActivity.class);
@@ -253,6 +309,8 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
                 }
                 break;
         }
+     //   mNotificationManager.notify(SIMPLE_NOTFICATION_ID,
+     //           notifyDetails);
         return true;
     }
 
