@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#33E9FF"
+    android:background="@drawable/food_image"
     tools:context="com.example.nicollettedessy.projectidea.EnterMeals">
 
     <TextView
@@ -30,5 +30,6 @@
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         />
+
 </LinearLayout>
 </ScrollView>
