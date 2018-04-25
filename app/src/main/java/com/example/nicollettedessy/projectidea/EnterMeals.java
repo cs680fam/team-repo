@@ -1,5 +1,6 @@
 package com.example.nicollettedessy.projectidea;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -9,7 +10,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,10 +24,23 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Intent;
 
 import java.util.ArrayList;
 
 public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemClickListener{
+
+
+    private NotificationManager mNotificationManager;
+    private Notification notifyDetails;
+    private int SIMPLE_NOTIFICATION_ID = 112233;
+    private String contentTitle = "Don't forget to add in meal information!";
+    private String contentText = "Click me to go to your meal list";
+    private String tickerText = "New Alert, Click Me !!!";
 
     //This creates an array list that will store meals, each row is intially blank
     private ArrayList<String> mealInformation = new ArrayList<String>(){{
@@ -70,6 +83,43 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_meals);
+
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        //create intent for action when notification selected
+        //from expanded status bar
+        Intent notifyIntent = new Intent(this, EnterMeals.class);
+
+        //create pending intent to wrap intent so that it
+        //will fire when notification selected.
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //build notification object and set parameters
+        notifyDetails =
+                new Notification.Builder(this)
+                        .setContentIntent(pendingIntent)
+
+                        .setContentTitle(contentTitle)   //set Notification text and icon
+                        .setContentText(contentText)
+
+                        .setTicker(tickerText)            //set status bar text
+
+                        .setWhen(System.currentTimeMillis())    //timestamp when event occurs
+
+                        .setAutoCancel(true)     //cancel Notification after clicking on it
+
+                        //set Android to vibrate when notified
+                        .setVibrate(new long[]{1000, 1000, 1000, 1000})
+
+                        .setSmallIcon(R.mipmap.ic_launcher)
+
+                        // flash LED (color, on in millisec, off)
+                        //doesn't work for all handsets
+                        .setLights(Integer.MAX_VALUE, 500, 500)
+
+                        .build();
+
 
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
@@ -236,21 +286,13 @@ public class EnterMeals extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     //This will open up the NearbyActivity activity if the "Nearby" option is selected
     public boolean onOptionsItemSelected(MenuItem item) {
+        mNotificationManager.cancel(SIMPLE_NOTIFICATION_ID);
         switch (item.getItemId()) {
             case R.id.nearby:
+                mNotificationManager.notify(SIMPLE_NOTIFICATION_ID,
+                        notifyDetails);
                 Intent intent = new Intent(this, NearbyActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.email:
-                Intent msg = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
-                msg.putExtra(Intent.EXTRA_EMAIL, new String[] {"JayPerfetto@gmail.com"});
-                msg.putExtra(Intent.EXTRA_TEXT, "Hey - I just created a meal list using myfood.io! Try it out!");
-                msg.putExtra(Intent.EXTRA_SUBJECT, "New Meal Tracker App!");
-
-                //check to be sure email is installed on handset
-                if (msg.resolveActivity(getPackageManager()) != null) {
-                    startActivity(msg);
-                }
                 break;
         }
         return true;
